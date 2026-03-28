@@ -1,182 +1,845 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portafolio - Ingeniero de Sistemas</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>projects // jkhenzai.dev</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
   <style>
+    :root {
+      --bg: #080b0f;
+      --bg2: #0d1117;
+      --bg3: #111820;
+      --border: #1a2a1a;
+      --green: #00ff41;
+      --green2: #00cc33;
+      --green3: #004d14;
+      --cyan: #00e5ff;
+      --yellow: #ffd600;
+      --red: #ff1744;
+      --dim: #2a4a2a;
+      --text: #c8ffc8;
+      --muted: #4a7a4a;
+      --font: 'JetBrains Mono', monospace;
+      --font2: 'Share Tech Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      background-color: #0f172a;
-      color: #e2e8f0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
     }
-    .card {
-      background-color: #1e293b;
-      border: none;
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      mix-blend-mode: screen;
     }
-    .badge-tech {
-      background-color: #38bdf8;
-      color: #0f172a;
-      margin: 2px;
+    .cursor-dot {
+      position: fixed;
+      width: 4px; height: 4px;
+      background: var(--green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
     }
-    .section-title {
-      border-left: 5px solid #38bdf8;
-      padding-left: 10px;
+
+    /* Scanlines overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,65,0.015) 2px,
+        rgba(0,255,65,0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Noise texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 99;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8,11,15,0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-logo {
+      font-family: var(--font2);
+      font-size: 1.1rem;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+    .nav-logo span { color: var(--muted); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green); }
+    .nav-links a.active { color: var(--green); }
+
+    .nav-status {
+      font-size: 0.65rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 4px var(--green); }
+      50% { opacity: 0.4; box-shadow: none; }
+    }
+
+    /* HERO TERMINAL */
+    .hero {
+      padding: 120px 32px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 20px;
+    }
+    .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .t-dot.r { background: #ff5f57; }
+    .t-dot.y { background: #febc2e; }
+    .t-dot.g { background: #28c840; }
+    .t-bar {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 12px;
+    }
+    .t-path {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .terminal-prompt {
+      font-family: var(--font2);
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .terminal-prompt .usr { color: var(--green); }
+    .terminal-prompt .sep { color: var(--dim); }
+    .terminal-prompt .path { color: var(--cyan); }
+
+    h1 {
+      font-family: var(--font2);
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      color: var(--green);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      line-height: 1.1;
+      text-shadow: 0 0 30px rgba(0,255,65,0.3);
+    }
+    h1 .dim { color: var(--muted); }
+    h1 .cursor-blink {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--green);
+      margin-left: 4px;
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-sub {
+      margin-top: 16px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+      line-height: 1.8;
+    }
+    .hero-sub .hl { color: var(--cyan); }
+
+    /* FILTER BAR */
+    .filter-bar {
+      max-width: 1100px;
+      margin: 40px auto 0;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--dim);
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      padding: 5px 12px;
+      cursor: none;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(0,255,65,0.05);
+      box-shadow: 0 0 8px rgba(0,255,65,0.15);
+    }
+
+    /* PROJECTS GRID */
+    .projects-grid {
+      max-width: 1100px;
+      margin: 32px auto 0;
+      padding: 0 32px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.5s forwards;
+    }
+    .project-card:nth-child(1) { animation-delay: 0.1s }
+    .project-card:nth-child(2) { animation-delay: 0.2s }
+    .project-card:nth-child(3) { animation-delay: 0.3s }
+    .project-card:nth-child(4) { animation-delay: 0.4s }
+    .project-card:nth-child(5) { animation-delay: 0.5s }
+    .project-card:nth-child(6) { animation-delay: 0.6s }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,65,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover {
+      border-color: var(--green3);
+      box-shadow: 0 0 20px rgba(0,255,65,0.08), inset 0 0 20px rgba(0,255,65,0.03);
+      transform: translateY(-2px);
+    }
+    .project-card:hover::before { opacity: 1; }
+
+    /* corner accent */
+    .project-card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 40px; height: 40px;
+      border-top: 1px solid var(--green3);
+      border-right: 1px solid var(--green3);
+      transition: all 0.3s;
+    }
+    .project-card:hover::after {
+      width: 60px; height: 60px;
+      border-color: var(--green);
+    }
+
+    .card-index {
+      font-family: var(--font2);
+      font-size: 0.6rem;
+      color: var(--dim);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .card-index span { color: var(--green3); }
+
+    .card-title {
+      font-family: var(--font2);
+      font-size: 1rem;
+      color: var(--green);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px rgba(0,255,65,0.2);
+    }
+
+    .card-desc {
+      font-size: 0.72rem;
+      color: #6a8a6a;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .tag {
+      font-size: 0.58rem;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border: 1px solid;
+      text-transform: uppercase;
+    }
+    .tag.py  { border-color: #2a4a3a; color: #00cc33; }
+    .tag.ai  { border-color: #1a3a4a; color: var(--cyan); }
+    .tag.api { border-color: #3a3a1a; color: var(--yellow); }
+    .tag.ml  { border-color: #3a1a2a; color: #ff6ec7; }
+    .tag.auto{ border-color: #2a3a1a; color: #aaff00; }
+    .tag.data{ border-color: #1a2a3a; color: #40c4ff; }
+    .tag.llm { border-color: #2a1a3a; color: #ce93d8; }
+    .tag.web { border-color: #3a2a1a; color: #ffab40; }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-status {
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .card-status .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+    }
+    .status-live .dot { background: var(--green); box-shadow: 0 0 4px var(--green); }
+    .status-live { color: var(--green); }
+    .status-wip .dot { background: var(--yellow); }
+    .status-wip { color: var(--yellow); }
+    .status-concept .dot { background: var(--muted); }
+    .status-concept { color: var(--muted); }
+
+    .card-links {
+      display: flex;
+      gap: 10px;
+    }
+    .card-link {
+      font-size: 0.62rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border: 1px solid var(--dim);
+      transition: all 0.15s;
+    }
+    .card-link:hover {
+      color: var(--green);
+      border-color: var(--green);
+      background: rgba(0,255,65,0.05);
+    }
+
+    /* FEATURED CARD */
+    .project-card.featured {
+      grid-column: span 2;
+      border-color: var(--green3);
+    }
+    @media (max-width: 720px) {
+      .project-card.featured { grid-column: span 1; }
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 14px; right: 40px;
+      font-size: 0.55rem;
+      letter-spacing: 2px;
+      color: var(--green);
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px 32px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-val {
+      font-family: var(--font2);
+      font-size: 1.4rem;
+      color: var(--green);
+      text-shadow: 0 0 10px rgba(0,255,65,0.3);
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* DIVIDER */
+    .section-divider {
+      max-width: 1100px;
+      margin: 0 auto 28px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .divider-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer .f-left {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    footer .f-left span { color: var(--green); }
+    footer .f-right {
+      font-size: 0.62rem;
+      color: var(--dim);
+    }
+
+    /* HIDDEN filter */
+    .project-card.hidden {
+      display: none;
+    }
+
+    /* BACK TO HOME */
+    .back-home-wrap {
+      max-width: 1100px;
+      margin: 0 auto 20px;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .back-home-terminal {
+      font-family: var(--font2);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .back-home-terminal .usr  { color: var(--green); }
+    .back-home-terminal .sep  { color: var(--dim); }
+    .back-home-terminal .path { color: var(--cyan); }
+    .bh-cmd { color: var(--text); }
+    .back-home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      border: 1px solid var(--green3);
+      color: var(--green);
+      text-decoration: none;
+      font-family: var(--font2);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .back-home-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,255,65,0.05);
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+    }
+    .back-home-btn:hover::before { transform: translateX(0); }
+    .back-home-btn:hover {
+      border-color: var(--green);
+      box-shadow: 0 0 20px rgba(0,255,65,0.15);
+    }
+    .bh-arrow { transition: transform 0.2s; display: inline-block; }
+    .back-home-btn:hover .bh-arrow { transform: translateX(-4px); }
+    .bh-sub {
+      font-size: 0.6rem;
+      color: var(--dim);
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 12px 16px; }
+      .nav-links { display: none; }
+      .hero, .filter-bar, .projects-grid, .stats-bar, .section-divider, .back-home-wrap { padding-left: 16px; padding-right: 16px; }
     }
   </style>
 </head>
-
 <body>
 
-<div class="container py-5">
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
 
-  <!-- Header -->
-  <div class="text-center mb-5">
-    <h1 class="fw-bold">🚀 Portafolio de Proyectos</h1>
-    <p class="lead">Ingeniería de Sistemas | Python • Machine Learning • AI Agents</p>
+  <!-- NAV -->
+  <nav>
+    <a href="https://jkhenzai.dev" class="nav-logo">jkhenzai<span>.dev</span></a>
+    <ul class="nav-links">
+      <li><a href="https://jkhenzai.dev">← home</a></li>
+      <li><a href="#" class="active">projects</a></li>
+    </ul>
+    <div class="nav-status">
+      <div class="status-dot"></div>
+      <span>sys.online</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="terminal-header">
+      <div class="t-dot r"></div>
+      <div class="t-dot y"></div>
+      <div class="t-dot g"></div>
+      <div class="t-bar"></div>
+      <span class="t-path">~/jkhenzai/projects</span>
+    </div>
+    <div class="terminal-prompt">
+      <span class="usr">jkhz</span><span class="sep">@</span><span class="path">jkhenzai.dev</span> <span style="color:var(--dim)">$</span> ls -la ./projects
+    </div>
+    <h1><span class="dim">./</span>projects<span class="cursor-blink"></span></h1>
+    <p class="hero-sub">
+      Python · AI/ML · Automation · APIs · Research<br/>
+      <span class="hl">// Systems Engineering student · specializing in AI · Lima, PE</span>
+    </p>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat"><span class="stat-val" id="totalCount">0</span><span class="stat-label">total projects</span></div>
+    <div class="stat"><span class="stat-val" id="liveCount">0</span><span class="stat-label">live / deployed</span></div>
+    <div class="stat"><span class="stat-val" id="wipCount">0</span><span class="stat-label">in progress</span></div>
+    <div class="stat"><span class="stat-val" id="techCount">5</span><span class="stat-label">core technologies</span></div>
   </div>
 
-  <!-- Sobre mí -->
-  <section class="mb-5">
-    <h3 class="section-title">👨‍💻 Sobre mí</h3>
-    <p>
-      Ingeniero de Sistemas con enfoque en desarrollo backend, machine learning y sistemas autónomos basados en agentes de IA.
-      Experiencia construyendo soluciones escalables usando Python y herramientas modernas de inteligencia artificial.
-    </p>
-  </section>
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <span class="filter-label">filter:</span>
+    <button class="filter-btn active" data-filter="all">all</button>
+    <button class="filter-btn" data-filter="python">python</button>
+    <button class="filter-btn" data-filter="ai">ai/ml</button>
+    <button class="filter-btn" data-filter="automation">automation</button>
+    <button class="filter-btn" data-filter="api">api</button>
+    <button class="filter-btn" data-filter="data">data</button>
+  </div>
 
-  <!-- Proyectos -->
-  <section class="mb-5">
-    <h3 class="section-title">🧠 Proyectos Destacados</h3>
+  <!-- DIVIDER -->
+  <div class="section-divider" style="margin-top:28px">
+    <span class="divider-label">// featured</span>
+    <div class="divider-line"></div>
+  </div>
 
-    <div class="row g-4">
+  <!-- GRID -->
+  <div class="projects-grid" id="projectsGrid">
 
-      <!-- Proyecto 1 -->
-      <div class="col-md-6">
-        <div class="card p-4 h-100">
-          <h5>🤖 SmartSupport AI Agent</h5>
-          <p>Agente conversacional autónomo para atención al cliente con integración a APIs externas.</p>
-          <div>
-            <span class="badge badge-tech">Python</span>
-            <span class="badge badge-tech">FastAPI</span>
-            <span class="badge badge-tech">LangChain</span>
-            <span class="badge badge-tech">Redis</span>
-          </div>
-          <ul class="mt-3">
-            <li>Razonamiento multi-step</li>
-            <li>Clasificación automática de tickets</li>
-            <li>Chat en tiempo real</li>
-          </ul>
+    <div class="project-card featured" data-tags="python,automation,api">
+      <span class="featured-badge">★ featured</span>
+      <div class="card-index"><span>01</span> // automation</div>
+      <div class="card-title">Automation Pipeline — Python</div>
+      <div class="card-desc">
+        Modular job runner with retries, distributed metrics, and alerting system.
+        Integrates with REST endpoints and message queues. Designed for resilience
+        and observability in production environments.
+      </div>
+      <div class="card-tags">
+        <span class="tag py">Python</span>
+        <span class="tag auto">Automation</span>
+        <span class="tag api">REST</span>
+        <span class="tag data">Queues</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-status status-live"><div class="dot"></div>live</div>
+        <div class="card-links">
+          <a href="https://github.com/iJKENNEDY" class="card-link" target="_blank">github →</a>
         </div>
       </div>
-
-      <!-- Proyecto 2 -->
-      <div class="col-md-6">
-        <div class="card p-4 h-100">
-          <h5>📈 Predictive Sales ML Model</h5>
-          <p>Modelo de predicción de ventas basado en datos históricos y variables externas.</p>
-          <div>
-            <span class="badge badge-tech">Python</span>
-            <span class="badge badge-tech">Scikit-learn</span>
-            <span class="badge badge-tech">XGBoost</span>
-          </div>
-          <ul class="mt-3">
-            <li>Accuracy del 89%</li>
-            <li>Optimización de forecasting</li>
-            <li>Pipeline completo ML</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Proyecto 3 -->
-      <div class="col-md-6">
-        <div class="card p-4 h-100">
-          <h5>🧾 Resume Parser NLP</h5>
-          <p>Sistema que analiza CVs y extrae información clave usando NLP.</p>
-          <div>
-            <span class="badge badge-tech">Python</span>
-            <span class="badge badge-tech">SpaCy</span>
-            <span class="badge badge-tech">BERT</span>
-          </div>
-          <ul class="mt-3">
-            <li>Extracción de skills</li>
-            <li>Matching laboral</li>
-            <li>Clasificación de perfiles</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Proyecto 4 -->
-      <div class="col-md-6">
-        <div class="card p-4 h-100">
-          <h5>🧠 Multi-Agent Research Assistant</h5>
-          <p>Sistema de múltiples agentes colaborando para generar reportes automáticos.</p>
-          <div>
-            <span class="badge badge-tech">Python</span>
-            <span class="badge badge-tech">CrewAI</span>
-            <span class="badge badge-tech">OpenAI</span>
-          </div>
-          <ul class="mt-3">
-            <li>Automatización de investigación</li>
-            <li>Generación de reportes</li>
-            <li>Arquitectura multi-agente</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Proyecto 5 -->
-      <div class="col-md-6">
-        <div class="card p-4 h-100">
-          <h5>🛒 Recommendation System</h5>
-          <p>Sistema de recomendación para e-commerce basado en comportamiento de usuarios.</p>
-          <div>
-            <span class="badge badge-tech">Python</span>
-            <span class="badge badge-tech">TensorFlow</span>
-            <span class="badge badge-tech">Pandas</span>
-          </div>
-          <ul class="mt-3">
-            <li>Filtrado colaborativo</li>
-            <li>Incremento de conversión</li>
-            <li>Mejora en retención</li>
-          </ul>
-        </div>
-      </div>
-
     </div>
-  </section>
 
-  <!-- Stack -->
-  <section class="mb-5">
-    <h3 class="section-title">⚙️ Stack Tecnológico</h3>
-    <p>
-      <strong>Lenguajes:</strong> Python, SQL<br>
-      <strong>Frameworks:</strong> FastAPI, Flask, Docker<br>
-      <strong>ML:</strong> Scikit-learn, TensorFlow, PyTorch<br>
-      <strong>AI:</strong> LangChain, OpenAI, FAISS
-    </p>
-  </section>
+    <div class="project-card" data-tags="ai,ml,api">
+      <div class="card-index"><span>02</span> // inference</div>
+      <div class="card-title">ML Inference Service</div>
+      <div class="card-desc">
+        Fast API layer for model inference with caching, experiment tracking,
+        and structured evaluation reports. Supports classical ML and LLM patterns.
+      </div>
+      <div class="card-tags">
+        <span class="tag ai">AI/ML</span>
+        <span class="tag api">FastAPI</span>
+        <span class="tag ml">Inference</span>
+        <span class="tag llm">LLM</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-status status-live"><div class="dot"></div>live</div>
+        <div class="card-links">
+          <a href="https://github.com/iJKENNEDY" class="card-link" target="_blank">github →</a>
+        </div>
+      </div>
+    </div>
 
-  <!-- Métricas -->
-  <section class="mb-5">
-    <h3 class="section-title">📊 Métricas</h3>
-    <ul>
-      <li>+5 proyectos implementados</li>
-      <li>+3 sistemas con IA en producción</li>
-      <li>Reducción de costos: 40%</li>
-      <li>Mejora de eficiencia: 60%</li>
-    </ul>
-  </section>
+    <div class="project-card" data-tags="python,data,automation">
+      <div class="card-index"><span>03</span> // data</div>
+      <div class="card-title">Data Scraper Toolkit</div>
+      <div class="card-desc">
+        Resilient scraping engine with smart throttling, HTML parsing pipelines,
+        and export modules to databases and CSVs. Rate-limit aware.
+      </div>
+      <div class="card-tags">
+        <span class="tag py">Python</span>
+        <span class="tag data">Data</span>
+        <span class="tag auto">Scraping</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-status status-live"><div class="dot"></div>live</div>
+        <div class="card-links">
+          <a href="https://github.com/iJKENNEDY" class="card-link" target="_blank">github →</a>
+        </div>
+      </div>
+    </div>
 
-  <!-- Contacto -->
-  <section class="text-center">
-    <h3 class="section-title">📫 Contacto</h3>
-    <p>Email: ingeniero.fake@email.com</p>
-    <p>GitHub: github.com/ingeniero-fake</p>
-    <p>LinkedIn: linkedin.com/in/ingeniero-fake</p>
-  </section>
+    <div class="project-card" data-tags="python,api">
+      <div class="card-index"><span>04</span> // backend</div>
+      <div class="card-title">Backend Integrations</div>
+      <div class="card-desc">
+        Clean architecture for third-party integrations with pagination, retry logic,
+        observability hooks, and full test coverage.
+      </div>
+      <div class="card-tags">
+        <span class="tag py">Python</span>
+        <span class="tag api">APIs</span>
+        <span class="tag web">Backend</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-status status-live"><div class="dot"></div>live</div>
+        <div class="card-links">
+          <a href="https://github.com/iJKENNEDY" class="card-link" target="_blank">github →</a>
+        </div>
+      </div>
+    </div>
 
-</div>
+    <div class="project-card" data-tags="ai,llm,python">
+      <div class="card-index"><span>05</span> // research</div>
+      <div class="card-title">LLM Evaluation Framework</div>
+      <div class="card-desc">
+        Research-grade framework for benchmarking LLM responses. Metric pipelines,
+        prompt versioning, and comparative reports across model families.
+      </div>
+      <div class="card-tags">
+        <span class="tag llm">LLM</span>
+        <span class="tag ai">AI</span>
+        <span class="tag py">Python</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-status status-wip"><div class="dot"></div>in progress</div>
+        <div class="card-links">
+          <a href="https://github.com/iJKENNEDY" class="card-link" target="_blank">github →</a>
+        </div>
+      </div>
+    </div>
 
+    <div class="project-card" data-tags="automation,python,data">
+      <div class="card-index"><span>06</span> // tooling</div>
+      <div class="card-title">Workflow Automation CLI</div>
+      <div class="card-desc">
+        CLI toolset for automating repetitive dev workflows — file ops, report
+        generation, environment bootstrapping. Extensible plugin architecture.
+      </div>
+      <div class="card-tags">
+        <span class="tag py">Python</span>
+        <span class="tag auto">CLI</span>
+        <span class="tag auto">Automation</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-status status-wip"><div class="dot"></div>in progress</div>
+        <div class="card-links">
+          <a href="https://github.com/iJKENNEDY" class="card-link" target="_blank">github →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BACK TO HOME -->
+  <div class="back-home-wrap">
+    <div class="back-home-terminal">
+      <span class="bh-prompt"><span class="usr">jkhz</span><span class="sep">@</span><span class="path">jkhenzai.dev</span> $ </span>
+      <span class="bh-cmd">cd ..</span>
+    </div>
+    <a href="https://jkhenzai.dev" class="back-home-btn">
+      <span class="bh-arrow">←</span> return to jkhenzai.dev
+    </a>
+    <p class="bh-sub">// back to main landing</p>
+  </div>
+
+  <footer>
+    <div class="f-left">© 2025 <span>iJKENNEDY</span> — jkhenzai.dev</div>
+    <div class="f-right">// systems engineering · AI specialization</div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const dot = document.getElementById('cursorDot');
+    let mx = 0, my = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx - 2 + 'px';
+      dot.style.top  = my - 2 + 'px';
+    });
+    function animCursor() {
+      const cx = parseFloat(cursor.style.left || mx) || mx;
+      const cy = parseFloat(cursor.style.top  || my) || my;
+      cursor.style.left = (cx + (mx - cx - 9) * 0.18) + 'px';
+      cursor.style.top  = (cy + (my - cy - 9) * 0.18) + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+
+    document.querySelectorAll('a,button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(1.8)');
+      el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
+
+    // Stats counter animation
+    function animCount(el, target, duration = 1200) {
+      let start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        el.textContent = Math.floor(p * target);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(step);
+    }
+
+    const cards = document.querySelectorAll('.project-card');
+    const live  = [...cards].filter(c => c.querySelector('.status-live')).length;
+    const wip   = [...cards].filter(c => c.querySelector('.status-wip')).length;
+
+    setTimeout(() => {
+      animCount(document.getElementById('totalCount'), cards.length);
+      animCount(document.getElementById('liveCount'),  live, 900);
+      animCount(document.getElementById('wipCount'),   wip,  800);
+    }, 400);
+
+    // Filter logic
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          const tags = card.dataset.tags || '';
+          if (filter === 'all' || tags.includes(filter)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Glitch effect on title on hover
+    const h1 = document.querySelector('h1');
+    h1.addEventListener('mouseenter', () => {
+      h1.style.textShadow = '2px 0 #ff1744, -2px 0 #00e5ff, 0 0 30px rgba(0,255,65,0.5)';
+      setTimeout(() => {
+        h1.style.textShadow = '0 0 30px rgba(0,255,65,0.3)';
+      }, 150);
+    });
+  </script>
 </body>
 </html>
